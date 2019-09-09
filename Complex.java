@@ -76,6 +76,62 @@ public class Complex
     public Complex multiply(double real){
         return new Complex(realComponent * real, complexComponent * real);
     }
+
+    /**
+     * Computes this Complex number raised to an integer power and returns the result
+     * 
+     * @param power The exponent to raise this Complex number to 
+     * 
+     * @return This Complex number raised to the specified power
+     */
+    public Complex exponent(int power){
+        Complex c = this;
+        for(int i = 1; i < power; i++){
+            c = c.multiply(this);
+        }
+
+        return c;
+    }
+
+    /**
+     * Computes the distance from the origin to this Complex number in the complex plane
+     * 
+     * @return The distance from the origin of the complex plane to this Complex number
+     */
+    public double distance(){
+        return Math.sqrt(Math.pow(realComponent, 2) + Math.pow(complexComponent, 2));
+    }
+
+    /**
+     * Determines if this Complex number C is in the mandelbrot set by computing Z = Z^pow + C recursively with Z starting at the origin. 
+     * If the distance from the origin to Z is greater than 2 at any point in the process, the function returns early.
+     * 
+     * This function returns the number of iterations it took to determine that a number is not in the set.
+     * If this Complex number is determined to be in the set (by reaching the maximum number of iterations without reaching the exit case), then -1 is returned
+     * 
+     * @param iterations The maximum number of iterations to run before determining that this Complex is included in the mandelbrot set
+     * @param pow The exponent to use for the z^pow portion of the equation
+     * 
+     * @return The number of iterations it took to determine that this Complex is not part of the mandelbrot set, or -1 if the number is included in the set
+     */
+    public int mandelbrot(int iterations, int power){
+        Complex c = this;
+
+        int count = 0;
+        Complex z = new Complex(0,0);
+
+        while(count < iterations){
+            // Z = Z^pow + C
+            z = z.exponent(power).add(c);
+            count++;
+
+            if(z.distance() > 2.0){
+                return count;
+            }
+        }
+
+        return -1;
+    }
     
     /**
      * Getter method for the real component of a complex number
